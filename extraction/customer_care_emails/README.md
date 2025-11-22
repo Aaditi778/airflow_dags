@@ -28,25 +28,26 @@ PG_PASSWORD=airflow
 docker compose up -d
 ```
 ## 3. Access airflow
-   1.Open http://127.0.0.1:8081 
-   2.Add login credentials (Present in docker-compose.yml)
-   3.Enable the DAG:
+   -Open http://127.0.0.1:8081 
+   -Add login credentials (Present in docker-compose.yml)
+   -Enable the DAG:
      DAG ID: customer_care_emails_ingest
 ## 4. Trigger DAG
-   From the Airflow UI, click Trigger DAG. Tasks will run in sequence: file_check → validate_schema → transform → load
+   -From the Airflow UI, click Trigger DAG.
+   -Tasks will run in sequence: file_check → validate_schema → transform → load
 ## 5. DAG Overview
   Task Flow:
-  1. file_check → Ensures CSV exists.
-  2. validate_schema → Confirms CSV columns match schema_expected.yaml.
-  3. transform → Cleans whitespace, fills NaN, writes logs/cleaned.csv.
-  4. load → Creates table (via create_table.sql) and inserts rows into Postgres.
+  -1. file_check → Ensures CSV exists.
+  -2. validate_schema → Confirms CSV columns match schema_expected.yaml.
+  -3. transform → Cleans whitespace, fills NaN, writes logs/cleaned.csv.
+  -4. load → Creates table (via create_table.sql) and inserts rows into Postgres.
 ## 6.Troubleshooting
-  1.Schema mismatch Error: Schema mismatch! Expected [...] got [...]
+  -Schema mismatch Error: Schema mismatch! Expected [...] got [...]
     → Update schema_expected.yaml 
       accordingly with the help of code editor.
-  2.Missing CSV Error: FileNotFoundError: CSV file not found
+  -Missing CSV Error: FileNotFoundError: CSV file not found
     → Ensure sample_data/customer_care_emails_sample.csv exists.
-  3.Invalid credentials Error: psycopg2.OperationalError: FATAL: password authentication failed
+  -Invalid credentials Error: psycopg2.OperationalError: FATAL: password authentication failed
     → Check .env values and Docker Compose environment variables.
        
  ## 7. Resetting DAG
@@ -59,8 +60,8 @@ docker compose up -d
    Re‑run DAG to reload from full CSV.
 ## 9.  Runbook
   ###Updating Schema YAML or DDL When Dataset Evolves
-     1.Update schema_expected.yaml
-     Open extraction/customer_care_emails/config/schema_expected.yaml.
+     -Update schema_expected.yaml
+     Open `extraction/customer_care_emails/config/schema_expected.yaml`.
      Add/remove/modify column definitions to match the new CSV headers.
      Example: If a new column priority_level is added:
    ```yaml
@@ -68,7 +69,7 @@ docker compose up -d
      type: text
      nullable: true
    ```
-   2.Update create_table.sql
+   -Update create_table.sql
      Open extraction/customer_care_emails/config/create_table.sql.
      Add the same column definition in SQL:
    
@@ -95,15 +96,16 @@ docker compose up -d
      priority_level TEXT
    );
    ```
-   3.Validate
-    Run the DAG again. The validate_schema task will check that the CSV headers match the YAML.
-    If mismatched, it will raise an error so you know to fix either the CSV or the YAML.
+   -Validate
+      -Run the DAG again. 
+      -The validate_schema task will check that the CSV headers match the YAML.
+      -If mismatched, it will raise an error so you know to fix either the CSV or the YAML.
    
- Rerunning with New CSV Drops
-   Place the new CSV
-   Copy the new file into:
-   **extraction/customer_care_emails/sample_data/customer_care_emails_sample.csv**
-   Overwrite the old one, or keep multiple versions with different names if you want history.
+ -Rerunning with New CSV Drops
+   -Place the new CSV
+   -Copy the new file into:
+   `extraction/customer_care_emails/sample_data/customer_care_emails_sample.csv`
+   -Overwrite the old one, or keep multiple versions with different names if you want history.
    
 Clear old DAG runs
    
@@ -115,9 +117,7 @@ Clear old DAG runs
    DROP TABLE IF EXISTS public.customer_care_emails;
   ```
    The DAG’s load task will recreate it using create_table.sql.
-   Trigger the DAG
-   In Airflow UI, click Trigger DAG.
-   Tasks run in order: file_check → validate_schema → transform → load.
+ 
 ###Verify
    
    Connect to Postgres:
@@ -127,12 +127,13 @@ Clear old DAG runs
   ```
    
 ###Checklist Before Committing New Datasets
-   [ ] Add dataset manifest.
-   [ ] Update schema_expected.yaml.
-   [ ] Update create_table.sql.
-   [ ] Provide sample CSV in sample_data/.
-   [ ] Verify DAG runs successfully end‑to‑end.
+  -[ ] Add dataset manifest.
+  -[ ] Update schema_expected.yaml.
+  -[ ] Update create_table.sql.
+  -[ ] Provide sample CSV in sample_data/.
+  -[ ] Verify DAG runs successfully end‑to‑end.
    
    End‑to‑end reproducibility is guaranteed with the provided YAML, DDL, and sample CSV.
+
 
 
