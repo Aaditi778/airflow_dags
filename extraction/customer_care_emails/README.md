@@ -20,7 +20,7 @@ PG_PORT=5432
 PG_DB=airflow
 PG_USER=airflow
 PG_PASSWORD=airflow
-
+```
 # Running the Pipeline
 
 ## 1. Start Docker Compose
@@ -29,6 +29,7 @@ docker compose up -d
 ## 2. Initialize airflow
 ```bash
 docker compose run airflow-init
+```
 ## 3. Access airflow
    Open http://127.0.0.1:8081 and enable the DAG:
      DAG ID: customer_care_emails_ingest
@@ -48,15 +49,18 @@ docker compose run airflow-init
        → Ensure sample_data/customer_care_emails_sample.csv exists.
      Invalid credentials Error: psycopg2.OperationalError: FATAL: password authentication failed
        → Check .env values and Docker Compose environment variables.
- ## 7. Resetting DAG Runs
+       
+ ## 7. Resetting DAG
     In Airflow UI, Clear DAG Runs → re‑trigger DAG.
     Or reset via CLI:
     ```bash
        docker exec -it <airflow-scheduler-container> airflow dags clear customer_care_emails_ingest --yes
+    ```
 ## 8. Reloading Data
    Drop table if needed:
    ```sql
       DROP TABLE IF EXISTS public.customer_care_emails;
+  ```
    Re‑run DAG to reload from full CSV.
 ## 9.  Runbook
    Updating Schema
@@ -76,3 +80,4 @@ docker compose run airflow-init
    [ ] Verify DAG runs successfully end‑to‑end.
 
 End‑to‑end reproducibility is guaranteed with the provided YAML, DDL, and sample CSV.
+
