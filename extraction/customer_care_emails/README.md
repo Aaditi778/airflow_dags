@@ -126,7 +126,7 @@ Clear old DAG runs
    psql -h postgres -U airflow -d airflow
   ```
    
-###Checklist Before Committing New Datasets
+### Checklist Before Committing New Datasets
   - [ ] Add dataset manifest.
   - [ ] Update schema_expected.yaml.
   - [ ] Update create_table.sql.
@@ -134,6 +134,7 @@ Clear old DAG runs
   - [ ] Verify DAG runs successfully end‑to‑end.
    
    End‑to‑end reproducibility is guaranteed with the provided YAML, DDL, and sample CSV.
+
 
 
 
